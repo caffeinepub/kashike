@@ -36,6 +36,72 @@ const categories = [
   },
 ];
 
+const artPieces = [
+  {
+    src: "/assets/uploads/image-019d2e2b-568c-778e-b0c1-e5526cf227d9-6.png",
+    alt: "Shiva and Bull – Spiritual Varanasi Art",
+  },
+  {
+    src: "/assets/uploads/image-019d2e2b-5679-75c4-89dc-bd362c9adb52-7.png",
+    alt: "Keychains and Painting Art Pieces",
+  },
+  {
+    src: "/assets/uploads/image-019d2e33-fe0c-7277-b7e5-5ccff23d3b59-1.png",
+    alt: "Circular paintings – Kashi art",
+  },
+  {
+    src: "/assets/uploads/image-019d2e33-fef6-7394-a6ea-81a4f2a598c2-2.png",
+    alt: "Radha Krishna – Traditional painting",
+  },
+  {
+    src: "/assets/uploads/image-019d2e34-0109-7603-a93d-5d434cb73967-3.png",
+    alt: "Buddha and birds – Spiritual artwork",
+  },
+];
+
+const collageItems = [
+  // Shiva/Bull – tall left anchor
+  {
+    ...artPieces[0],
+    style: {
+      gridColumn: "1 / 5",
+      gridRow: "1 / 3",
+    },
+  },
+  // Keychains – wide middle-top
+  {
+    ...artPieces[1],
+    style: {
+      gridColumn: "5 / 9",
+      gridRow: "1 / 2",
+    },
+  },
+  // Circular paintings – wide right-top
+  {
+    ...artPieces[2],
+    style: {
+      gridColumn: "9 / 13",
+      gridRow: "1 / 2",
+    },
+  },
+  // Radha Krishna – middle-bottom
+  {
+    ...artPieces[3],
+    style: {
+      gridColumn: "5 / 9",
+      gridRow: "2 / 3",
+    },
+  },
+  // Buddha – right-bottom
+  {
+    ...artPieces[4],
+    style: {
+      gridColumn: "9 / 13",
+      gridRow: "2 / 3",
+    },
+  },
+];
+
 export default function Home() {
   const { data: products, isLoading } = useAllProducts();
   const featured = products?.slice(0, 8) ?? [];
@@ -136,6 +202,111 @@ export default function Home() {
                     </div>
                   </div>
                 </Link>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* A Glimpse of Our Art */}
+      <section className="py-20" style={{ background: "oklch(0.10 0 0)" }}>
+        <div className="container mx-auto px-4 max-w-5xl">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-12"
+          >
+            <p
+              className="text-xs uppercase tracking-[0.3em] mb-3 font-medium"
+              style={{ color: "oklch(0.80 0.17 82)" }}
+            >
+              Artisan Craftsmanship
+            </p>
+            <h2
+              className="font-display text-4xl font-bold mb-3"
+              style={{ color: "oklch(0.80 0.17 82)" }}
+            >
+              A Glimpse of Our Art
+            </h2>
+            <p
+              className="text-base max-w-xl mx-auto"
+              style={{ color: "oklch(0.65 0 0)" }}
+            >
+              Hand-crafted spiritual artwork inspired by the soul of Kashi
+            </p>
+          </motion.div>
+
+          {/* Collage — desktop grid */}
+          <div
+            className="hidden md:grid gap-[3px]"
+            style={{
+              gridTemplateColumns: "repeat(12, 1fr)",
+              gridTemplateRows: "260px 260px",
+            }}
+          >
+            {collageItems.map((item, i) => (
+              <motion.div
+                key={item.src}
+                initial={{ opacity: 0, scale: 0.96 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.7, delay: i * 0.1 }}
+                className="overflow-hidden rounded-xl group relative"
+                style={{
+                  ...item.style,
+                  border: "1px solid oklch(0.25 0.04 80)",
+                  transition: "box-shadow 0.4s ease",
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLElement).style.boxShadow =
+                    "0 0 30px oklch(0.80 0.17 82 / 0.4)";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLElement).style.boxShadow = "none";
+                }}
+              >
+                <img
+                  src={item.src}
+                  alt={item.alt}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                />
+                <div
+                  className="absolute inset-0 pointer-events-none"
+                  style={{
+                    background:
+                      "linear-gradient(to top, oklch(0.06 0 0 / 0.55) 0%, transparent 50%)",
+                  }}
+                />
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Collage — mobile stack */}
+          <div className="flex flex-col gap-3 md:hidden">
+            {artPieces.map((piece, i) => (
+              <motion.div
+                key={piece.src}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: i * 0.1 }}
+                className="overflow-hidden rounded-xl group relative aspect-[4/3]"
+                style={{ border: "1px solid oklch(0.25 0.04 80)" }}
+              >
+                <img
+                  src={piece.src}
+                  alt={piece.alt}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                />
+                <div
+                  className="absolute inset-0 pointer-events-none"
+                  style={{
+                    background:
+                      "linear-gradient(to top, oklch(0.06 0 0 / 0.55) 0%, transparent 50%)",
+                  }}
+                />
               </motion.div>
             ))}
           </div>

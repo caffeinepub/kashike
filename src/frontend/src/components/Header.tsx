@@ -12,6 +12,8 @@ const navLinks = [
   { label: "Jute Folders", to: "/shop?category=Jute+Folders" },
   { label: "Jute Bags", to: "/shop?category=Jute+Bags" },
   { label: "About Us", to: "/about" },
+  { label: "Contact", to: "/contact" },
+  { label: "Sign Up", to: "/signup" },
 ];
 
 export default function Header() {
@@ -69,9 +71,11 @@ export default function Header() {
                 <Link
                   to={link.to.split("?")[0]}
                   className={`px-2.5 py-1.5 text-xs font-medium inline-block transition-colors whitespace-nowrap ${
-                    isActive(link.to)
-                      ? "text-[oklch(0.80_0.17_82)] border-b-2 border-[oklch(0.75_0.15_80)]"
-                      : "text-muted-foreground hover:text-[oklch(0.80_0.17_82)]"
+                    link.label === "Sign Up"
+                      ? "text-[oklch(0.10_0.02_60)] bg-[oklch(0.80_0.17_82)] rounded-full px-3 hover:bg-[oklch(0.72_0.15_80)]"
+                      : isActive(link.to)
+                        ? "text-[oklch(0.80_0.17_82)] border-b-2 border-[oklch(0.75_0.15_80)]"
+                        : "text-muted-foreground hover:text-[oklch(0.80_0.17_82)]"
                   }`}
                   data-ocid="nav.link"
                 >
@@ -91,13 +95,14 @@ export default function Header() {
           >
             <Search size={18} />
           </button>
-          <button
-            type="button"
+          <Link
+            to="/signup"
             className="p-2 text-muted-foreground hover:text-[oklch(0.80_0.17_82)] transition-colors"
             aria-label="Account"
+            data-ocid="nav.link"
           >
             <User size={18} />
-          </button>
+          </Link>
           <button
             type="button"
             className="p-2 text-muted-foreground hover:text-[oklch(0.80_0.17_82)] transition-colors"

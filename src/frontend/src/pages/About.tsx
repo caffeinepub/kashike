@@ -27,6 +27,22 @@ const galleryImages = [
     src: "/assets/uploads/image_19-019d2e16-9a11-735a-8d01-b8fb8e7e93a1-7.png",
     caption: "Certificate of Recognition",
   },
+  {
+    src: "/assets/uploads/image-019d2e2b-5349-744e-9162-270a0f30f183-1.png",
+    caption: "Meeting Notable Personalities at Stall",
+  },
+  {
+    src: "/assets/uploads/image-019d2e2b-5450-74fc-8745-ca522752b5d2-3.png",
+    caption: "Gifting Our 3D Painting Artwork",
+  },
+  {
+    src: "/assets/uploads/image-019d2e2b-54be-74e1-8b16-fb9a24fb8936-4.png",
+    caption: "Recognition by Art, Culture & Language Minister",
+  },
+  {
+    src: "/assets/uploads/image-019d2e2b-5508-724f-9d69-5500555b9b29-5.png",
+    caption: "With Supporters at Our Exhibition Stall",
+  },
 ];
 
 const values = [
@@ -224,7 +240,7 @@ export default function About() {
                 }}
               >
                 <img
-                  src="/assets/uploads/whatsapp_image_2026-01-23_at_11.07.23_am-removebg-preview-019d2e16-9797-70bb-9a96-d78f158a52fd-3.png"
+                  src="/assets/uploads/image-019d387d-e779-74ac-aa94-26c5e29812d0-1.png"
                   alt="Anjana Singh – Founder & President"
                   className="w-full h-full object-cover object-top"
                 />

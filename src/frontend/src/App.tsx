@@ -13,12 +13,21 @@ import Header from "./components/Header";
 import { CartProvider } from "./hooks/useCart";
 import About from "./pages/About";
 import Admin from "./pages/Admin";
+import Contact from "./pages/Contact";
 import Home from "./pages/Home";
+import Policies from "./pages/Policies";
 import Shop from "./pages/Shop";
+import Signup from "./pages/Signup";
 
 const queryClient = new QueryClient();
 
 const rootRoute = createRootRoute({
+  component: () => <Outlet />,
+});
+
+const layoutRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  id: "layout",
   component: () => (
     <>
       <Header />
@@ -29,34 +38,57 @@ const rootRoute = createRootRoute({
   ),
 });
 
-const homeRoute = createRoute({
+const adminRoute = createRoute({
   getParentRoute: () => rootRoute,
+  path: "/manage",
+  component: Admin,
+});
+
+const homeRoute = createRoute({
+  getParentRoute: () => layoutRoute,
   path: "/",
   component: Home,
 });
 
 const shopRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => layoutRoute,
   path: "/shop",
   component: Shop,
 });
 
 const aboutRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => layoutRoute,
   path: "/about",
   component: About,
 });
 
-const adminRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: "/admin",
-  component: Admin,
+const signupRoute = createRoute({
+  getParentRoute: () => layoutRoute,
+  path: "/signup",
+  component: Signup,
+});
+
+const contactRoute = createRoute({
+  getParentRoute: () => layoutRoute,
+  path: "/contact",
+  component: Contact,
+});
+
+const policiesRoute = createRoute({
+  getParentRoute: () => layoutRoute,
+  path: "/policies",
+  component: Policies,
 });
 
 const routeTree = rootRoute.addChildren([
-  homeRoute,
-  shopRoute,
-  aboutRoute,
+  layoutRoute.addChildren([
+    homeRoute,
+    shopRoute,
+    aboutRoute,
+    signupRoute,
+    contactRoute,
+    policiesRoute,
+  ]),
   adminRoute,
 ]);
 

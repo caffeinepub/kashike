@@ -21,7 +21,7 @@ function formatPrice(paise: bigint): string {
 export default function ProductCard({ product, index = 1 }: ProductCardProps) {
   const { addItem } = useCart();
   const imageUrl =
-    product.image?.getDirectURL?.() ??
+    product.imageUrl ||
     "/assets/generated/category-3d-paintings.dim_400x400.jpg";
 
   const handleAddToCart = () => {

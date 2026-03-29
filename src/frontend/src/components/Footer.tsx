@@ -20,10 +20,21 @@ export default function Footer() {
               Born from the ancient city of Kashi (Varanasi), Kashike brings you
               authentic traditional handicrafts crafted by master artisans.
             </p>
-            <div className="flex items-center gap-2 text-sm text-[oklch(0.55_0_0)]">
+            <div className="flex items-center gap-2 text-sm text-[oklch(0.55_0_0)] mb-6">
               <MapPin size={14} />
               <span>Varanasi, Uttar Pradesh, India</span>
             </div>
+            <p
+              className="text-xs uppercase tracking-widest mb-2"
+              style={{ color: "oklch(0.60 0.08 82)" }}
+            >
+              Our Brand Identity
+            </p>
+            <img
+              src="/assets/uploads/image-019d2e2b-53ec-70e8-aea5-45e31fea633e-2.png"
+              alt="Kashike Hindi Brand Seal"
+              className="h-20 w-auto object-contain"
+            />
           </div>
 
           {/* Quick links */}
@@ -57,12 +68,24 @@ export default function Footer() {
             <h4 className="text-sm font-bold uppercase tracking-widest text-[oklch(0.80_0.17_82)] mb-4">
               Customer Support
             </h4>
-            <ul className="space-y-2 text-sm text-[oklch(0.55_0_0)]">
-              <li>Shipping Policy</li>
-              <li>Return & Refund</li>
-              <li>Track Your Order</li>
-              <li>FAQ</li>
-              <li>Privacy Policy</li>
+            <ul className="space-y-2 text-sm">
+              {[
+                { label: "Shipping Policy", hash: "shipping" },
+                { label: "Return & Refund", hash: "returns" },
+                { label: "Track Your Order", hash: "tracking" },
+                { label: "FAQ", hash: "faq" },
+                { label: "Privacy Policy", hash: "privacy" },
+              ].map((item) => (
+                <li key={item.label}>
+                  <Link
+                    to="/policies"
+                    hash={item.hash}
+                    className="text-[oklch(0.55_0_0)] hover:text-[oklch(0.80_0.17_82)] transition-colors"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 

@@ -26,39 +26,27 @@ export function useProductsByCategory(category: string) {
   });
 }
 
-export function useIsAdmin() {
-  const { actor, isFetching } = useActor();
-  return useQuery<boolean>({
-    queryKey: ["isAdmin"],
-    queryFn: async () => {
-      if (!actor) return false;
-      return actor.isCallerAdmin();
-    },
-    enabled: !!actor && !isFetching,
-  });
-}
-
-export function useInitializeProducts() {
-  const { actor } = useActor();
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: async () => {
-      if (!actor) throw new Error("No actor");
-      return actor.initializeProducts();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["products"] });
-    },
-  });
-}
-
 export function useAddProduct() {
   const { actor } = useActor();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (product: Product) => {
+    mutationFn: async (product: {
+      name: string;
+      description: string;
+      price: bigint;
+      category: string;
+      imageUrl: string;
+      inStock: boolean;
+    }) => {
       if (!actor) throw new Error("No actor");
-      return actor.addProduct(product);
+      return actor.addProduct(
+        product.name,
+        product.description,
+        product.price,
+        product.category,
+        product.imageUrl,
+        product.inStock,
+      );
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
@@ -70,9 +58,25 @@ export function useUpdateProduct() {
   const { actor } = useActor();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (product: Product) => {
+    mutationFn: async (product: {
+      id: bigint;
+      name: string;
+      description: string;
+      price: bigint;
+      category: string;
+      imageUrl: string;
+      inStock: boolean;
+    }) => {
       if (!actor) throw new Error("No actor");
-      return actor.updateProduct(product);
+      return actor.updateProduct(
+        product.id,
+        product.name,
+        product.description,
+        product.price,
+        product.category,
+        product.imageUrl,
+        product.inStock,
+      );
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });

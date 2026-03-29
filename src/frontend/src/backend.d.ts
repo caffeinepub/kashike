@@ -7,12 +7,21 @@ export interface None {
     __kind__: "None";
 }
 export type Option<T> = Some<T> | None;
-export class ExternalBlob {
-    getBytes(): Promise<Uint8Array<ArrayBuffer>>;
-    getDirectURL(): string;
-    static fromURL(url: string): ExternalBlob;
-    static fromBytes(blob: Uint8Array<ArrayBuffer>): ExternalBlob;
-    withUploadProgress(onProgress: (percentage: number) => void): ExternalBlob;
+export interface ContactMessage {
+    id: bigint;
+    name: string;
+    email: string;
+    message: string;
+    timestamp: bigint;
+    mobile: string;
+}
+export interface SignupEntry {
+    id: bigint;
+    city: string;
+    fullName: string;
+    email: string;
+    timestamp: bigint;
+    mobile: string;
 }
 export interface UserProfile {
     name: string;
@@ -22,8 +31,8 @@ export interface Product {
     inStock: boolean;
     name: string;
     description: string;
+    imageUrl: string;
     category: string;
-    image: ExternalBlob;
     price: bigint;
 }
 export enum UserRole {
@@ -32,18 +41,21 @@ export enum UserRole {
     guest = "guest"
 }
 export interface backendInterface {
-    addProduct(product: Product): Promise<bigint>;
+    addProduct(name: string, description: string, price: bigint, category: string, imageUrl: string, inStock: boolean): Promise<bigint>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
     deleteProduct(id: bigint): Promise<void>;
+    getAllContactMessages(): Promise<Array<ContactMessage>>;
     getAllProducts(): Promise<Array<Product>>;
+    getAllSignups(): Promise<Array<SignupEntry>>;
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
     getProduct(id: bigint): Promise<Product>;
     getProductsByCategory(category: string): Promise<Array<Product>>;
     getUserProfile(user: Principal): Promise<UserProfile | null>;
-    initializeProducts(): Promise<void>;
     isCallerAdmin(): Promise<boolean>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
     setStock(id: bigint, inStock: boolean): Promise<void>;
-    updateProduct(product: Product): Promise<void>;
+    submitContactMessage(name: string, email: string, mobile: string, message: string): Promise<bigint>;
+    submitSignup(fullName: string, email: string, mobile: string, city: string): Promise<bigint>;
+    updateProduct(id: bigint, name: string, description: string, price: bigint, category: string, imageUrl: string, inStock: boolean): Promise<void>;
 }
