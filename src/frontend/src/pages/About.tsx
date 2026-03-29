@@ -233,7 +233,7 @@ export default function About() {
               className="flex-shrink-0"
             >
               <div
-                className="w-72 h-80 rounded-2xl overflow-hidden"
+                className="w-72 rounded-2xl overflow-hidden"
                 style={{
                   border: "2px solid oklch(0.30 0.05 80)",
                   boxShadow: "0 0 40px oklch(0.80 0.17 82 / 0.15)",
@@ -242,7 +242,7 @@ export default function About() {
                 <img
                   src="/assets/uploads/image-019d387d-e779-74ac-aa94-26c5e29812d0-1.png"
                   alt="Anjana Singh – Founder & President"
-                  className="w-full h-full object-cover object-top"
+                  className="w-full h-auto object-contain block"
                 />
               </div>
             </motion.div>
