@@ -35,7 +35,7 @@ export function useAddProduct() {
       description: string;
       price: bigint;
       category: string;
-      imageUrl: string;
+      imageUrls: string[];
       inStock: boolean;
     }) => {
       if (!actor) throw new Error("No actor");
@@ -44,8 +44,10 @@ export function useAddProduct() {
         product.description,
         product.price,
         product.category,
-        product.imageUrl,
+        product.imageUrls,
         product.inStock,
+        false,
+        0n,
       );
     },
     onSuccess: () => {
@@ -64,7 +66,7 @@ export function useUpdateProduct() {
       description: string;
       price: bigint;
       category: string;
-      imageUrl: string;
+      imageUrls: string[];
       inStock: boolean;
     }) => {
       if (!actor) throw new Error("No actor");
@@ -74,8 +76,10 @@ export function useUpdateProduct() {
         product.description,
         product.price,
         product.category,
-        product.imageUrl,
+        product.imageUrls,
         product.inStock,
+        false,
+        0n,
       );
     },
     onSuccess: () => {
@@ -104,7 +108,7 @@ export function useSetStock() {
   return useMutation({
     mutationFn: async ({ id, inStock }: { id: bigint; inStock: boolean }) => {
       if (!actor) throw new Error("No actor");
-      return actor.setStock(id, inStock);
+      return actor.setStock(id, inStock, 0n);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });

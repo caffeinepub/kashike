@@ -1,8 +1,6 @@
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { ShoppingCart } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import type { Product } from "../backend";
-import { useCart } from "../hooks/useCart";
 
 interface ProductCardProps {
   product: Product;
@@ -19,23 +17,16 @@ function formatPrice(paise: bigint): string {
 }
 
 export default function ProductCard({ product, index = 1 }: ProductCardProps) {
-  const { addItem } = useCart();
   const imageUrl =
-    product.imageUrl ||
-    "/assets/generated/category-3d-paintings.dim_400x400.jpg";
-
-  const handleAddToCart = () => {
-    addItem({
-      productId: product.id,
-      name: product.name,
-      price: product.price,
-      imageUrl,
-    });
-  };
+    product.imageUrls && product.imageUrls.length > 0
+      ? product.imageUrls[0]
+      : "/assets/generated/category-3d-paintings.dim_400x400.jpg";
 
   return (
-    <div
-      className="group bg-card rounded-lg overflow-hidden border border-border hover:border-[oklch(0.75_0.15_80)] hover:shadow-[0_0_20px_oklch(0.75_0.15_80/0.15)] transition-all duration-300"
+    <Link
+      to="/shop/$productId"
+      params={{ productId: String(product.id) }}
+      className="group block bg-card rounded-lg overflow-hidden border border-border hover:border-[oklch(0.75_0.15_80)] hover:shadow-[0_0_20px_oklch(0.75_0.15_80/0.15)] transition-all duration-300 cursor-pointer"
       data-ocid={`product.item.${index}`}
     >
       <div className="relative overflow-hidden aspect-square">
@@ -73,18 +64,11 @@ export default function ProductCard({ product, index = 1 }: ProductCardProps) {
           <span className="font-bold text-lg text-[oklch(0.80_0.17_82)]">
             {formatPrice(product.price)}
           </span>
-          <Button
-            size="sm"
-            className="bg-[oklch(0.75_0.15_80)] hover:bg-[oklch(0.80_0.17_82)] text-[oklch(0.08_0_0)] rounded-full text-xs px-4 gap-1.5 font-semibold"
-            onClick={handleAddToCart}
-            disabled={!product.inStock}
-            data-ocid={`product.button.${index}`}
-          >
-            <ShoppingCart size={13} />
-            Add to Cart
-          </Button>
+          <span className="text-xs text-muted-foreground group-hover:text-[oklch(0.80_0.17_82)] transition-colors">
+            View Details →
+          </span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }

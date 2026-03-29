@@ -7,15 +7,14 @@ import {
   createRoute,
   createRouter,
 } from "@tanstack/react-router";
-import CartDrawer from "./components/CartDrawer";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
-import { CartProvider } from "./hooks/useCart";
 import About from "./pages/About";
 import Admin from "./pages/Admin";
 import Contact from "./pages/Contact";
 import Home from "./pages/Home";
 import Policies from "./pages/Policies";
+import ProductDetail from "./pages/ProductDetail";
 import Shop from "./pages/Shop";
 import Signup from "./pages/Signup";
 
@@ -33,7 +32,6 @@ const layoutRoute = createRoute({
       <Header />
       <Outlet />
       <Footer />
-      <CartDrawer />
     </>
   ),
 });
@@ -54,6 +52,12 @@ const shopRoute = createRoute({
   getParentRoute: () => layoutRoute,
   path: "/shop",
   component: Shop,
+});
+
+const productDetailRoute = createRoute({
+  getParentRoute: () => layoutRoute,
+  path: "/shop/$productId",
+  component: ProductDetail,
 });
 
 const aboutRoute = createRoute({
@@ -84,6 +88,7 @@ const routeTree = rootRoute.addChildren([
   layoutRoute.addChildren([
     homeRoute,
     shopRoute,
+    productDetailRoute,
     aboutRoute,
     signupRoute,
     contactRoute,
@@ -103,10 +108,8 @@ declare module "@tanstack/react-router" {
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <CartProvider>
-        <RouterProvider router={router} />
-        <Toaster />
-      </CartProvider>
+      <RouterProvider router={router} />
+      <Toaster />
     </QueryClientProvider>
   );
 }

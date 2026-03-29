@@ -1,7 +1,6 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { Heart, Menu, Search, ShoppingCart, User, X } from "lucide-react";
+import { Menu, Search, User, X } from "lucide-react";
 import { useState } from "react";
-import { useCart } from "../hooks/useCart";
 
 const navLinks = [
   { label: "Home", to: "/" },
@@ -17,7 +16,6 @@ const navLinks = [
 ];
 
 export default function Header() {
-  const { totalItems, openCart } = useCart();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -103,27 +101,6 @@ export default function Header() {
           >
             <User size={18} />
           </Link>
-          <button
-            type="button"
-            className="p-2 text-muted-foreground hover:text-[oklch(0.80_0.17_82)] transition-colors"
-            aria-label="Wishlist"
-          >
-            <Heart size={18} />
-          </button>
-          <button
-            type="button"
-            className="p-2 text-muted-foreground hover:text-[oklch(0.80_0.17_82)] transition-colors relative"
-            aria-label="Cart"
-            onClick={openCart}
-            data-ocid="cart.open_modal_button"
-          >
-            <ShoppingCart size={18} />
-            {totalItems > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 bg-[oklch(0.75_0.15_80)] text-[oklch(0.08_0_0)] text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-                {totalItems}
-              </span>
-            )}
-          </button>
           <button
             type="button"
             className="md:hidden p-2 text-muted-foreground"

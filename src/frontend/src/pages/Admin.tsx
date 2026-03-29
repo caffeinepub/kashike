@@ -32,6 +32,7 @@ import { useQuery } from "@tanstack/react-query";
 import {
   Eye,
   EyeOff,
+  ImagePlus,
   Loader2,
   LogOut,
   Mail,
@@ -40,6 +41,7 @@ import {
   Plus,
   Trash2,
   Users,
+  X,
 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -64,6 +66,7 @@ const CATEGORIES = [
   "Jute Bags",
 ];
 const SKELETONS = ["a", "b", "c", "d", "e"];
+const PLACEHOLDER = "/assets/generated/category-3d-paintings.dim_400x400.jpg";
 
 function formatPrice(paise: bigint): string {
   return new Intl.NumberFormat("en-IN", {
@@ -99,13 +102,26 @@ interface ContactMessage {
   timestamp: bigint;
 }
 
+interface ImageEntry {
+  id: string;
+  url: string;
+}
+
 interface ProductFormData {
   name: string;
   description: string;
   category: string;
   price: string;
   inStock: boolean;
-  imageUrl: string;
+  images: ImageEntry[];
+}
+
+function makeId() {
+  return Math.random().toString(36).slice(2);
+}
+
+function toImageEntries(urls: string[]): ImageEntry[] {
+  return urls.map((url) => ({ id: makeId(), url }));
 }
 
 const defaultFormData: ProductFormData = {
@@ -114,8 +130,79 @@ const defaultFormData: ProductFormData = {
   category: CATEGORIES[0],
   price: "",
   inStock: true,
-  imageUrl: "",
+  images: [],
 };
+
+// ── Multi-URL Image Manager ──────────────────────────────────────────────────
+function ImageUrlManager({
+  images,
+  onChange,
+}: {
+  images: ImageEntry[];
+  onChange: (images: ImageEntry[]) => void;
+}) {
+  const addRow = () => onChange([...images, { id: makeId(), url: "" }]);
+
+  const updateRow = (id: string, url: string) => {
+    onChange(images.map((img) => (img.id === id ? { ...img, url } : img)));
+  };
+
+  const removeRow = (id: string) => {
+    onChange(images.filter((img) => img.id !== id));
+  };
+
+  return (
+    <div className="space-y-2">
+      {images.map((img) => (
+        <div key={img.id} className="flex items-center gap-2">
+          {/* Thumbnail preview */}
+          <div className="w-10 h-10 rounded-md overflow-hidden flex-shrink-0 border border-border bg-secondary">
+            {img.url.trim() ? (
+              <img
+                src={img.url}
+                alt="preview"
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).style.display = "none";
+                }}
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center">
+                <ImagePlus size={14} className="text-muted-foreground" />
+              </div>
+            )}
+          </div>
+          <Input
+            value={img.url}
+            onChange={(e) => updateRow(img.id, e.target.value)}
+            placeholder="https://example.com/image.jpg"
+            className="flex-1 text-sm"
+            data-ocid="admin.input"
+          />
+          <button
+            type="button"
+            onClick={() => removeRow(img.id)}
+            className="p-1.5 rounded hover:bg-destructive/20 text-muted-foreground hover:text-destructive transition-colors flex-shrink-0"
+            data-ocid="admin.delete_button"
+            aria-label="Remove image"
+          >
+            <X size={14} />
+          </button>
+        </div>
+      ))}
+      <Button
+        type="button"
+        variant="outline"
+        size="sm"
+        className="w-full border-dashed gap-2 text-muted-foreground hover:text-foreground"
+        onClick={addRow}
+        data-ocid="admin.secondary_button"
+      >
+        <Plus size={14} /> Add Image URL
+      </Button>
+    </div>
+  );
+}
 
 function SignupsTab() {
   const { actor, isFetching } = useActor();
@@ -389,7 +476,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
       category: product.category,
       price: (Number(product.price) / 100).toString(),
       inStock: product.inStock,
-      imageUrl: product.imageUrl,
+      images: toImageEntries(product.imageUrls ?? []),
     });
     setDialogOpen(true);
   };
@@ -402,6 +489,9 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
     const priceInPaise = BigInt(
       Math.round(Number.parseFloat(formData.price) * 100),
     );
+    const cleanUrls = formData.images
+      .map((img) => img.url.trim())
+      .filter((url) => url !== "");
 
     try {
       if (editingProduct) {
@@ -411,7 +501,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
           description: formData.description,
           price: priceInPaise,
           category: formData.category,
-          imageUrl: formData.imageUrl,
+          imageUrls: cleanUrls,
           inStock: formData.inStock,
         });
         toast.success("Product updated!");
@@ -421,7 +511,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
           description: formData.description,
           price: priceInPaise,
           category: formData.category,
-          imageUrl: formData.imageUrl,
+          imageUrls: cleanUrls,
           inStock: formData.inStock,
         });
         toast.success("Product added!");
@@ -547,14 +637,14 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                         <TableCell>
                           <img
                             src={
-                              product.imageUrl ||
-                              "/assets/generated/category-3d-paintings.dim_400x400.jpg"
+                              product.imageUrls && product.imageUrls.length > 0
+                                ? product.imageUrls[0]
+                                : PLACEHOLDER
                             }
                             alt={product.name}
                             className="w-12 h-12 object-cover rounded-md"
                             onError={(e) => {
-                              (e.target as HTMLImageElement).src =
-                                "/assets/generated/category-3d-paintings.dim_400x400.jpg";
+                              (e.target as HTMLImageElement).src = PLACEHOLDER;
                             }}
                           />
                         </TableCell>
@@ -622,7 +712,10 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
       </div>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-lg" data-ocid="admin.dialog">
+        <DialogContent
+          className="max-w-lg max-h-[90vh] overflow-y-auto"
+          data-ocid="admin.dialog"
+        >
           <DialogHeader>
             <DialogTitle className="font-display text-xl">
               {editingProduct ? "Edit Product" : "Add New Product"}
@@ -696,29 +789,18 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                   data-ocid="admin.textarea"
                 />
               </div>
+
+              {/* Multi-URL image manager */}
               <div className="col-span-2">
-                <Label htmlFor="prod-image">Image URL</Label>
-                <Input
-                  id="prod-image"
-                  value={formData.imageUrl}
-                  onChange={(e) =>
-                    setFormData((f) => ({ ...f, imageUrl: e.target.value }))
+                <Label className="mb-2 block">Product Images</Label>
+                <ImageUrlManager
+                  images={formData.images}
+                  onChange={(imgs) =>
+                    setFormData((f) => ({ ...f, images: imgs }))
                   }
-                  placeholder="https://example.com/image.jpg"
-                  className="mt-1"
-                  data-ocid="admin.input"
                 />
-                {formData.imageUrl && (
-                  <img
-                    src={formData.imageUrl}
-                    alt="Preview"
-                    className="mt-2 w-24 h-24 object-cover rounded-md border border-border"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).style.display = "none";
-                    }}
-                  />
-                )}
               </div>
+
               <div className="col-span-2 flex items-center gap-3">
                 <Switch
                   id="prod-stock"
